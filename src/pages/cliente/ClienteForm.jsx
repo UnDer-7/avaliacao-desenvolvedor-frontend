@@ -350,7 +350,7 @@ export default class ClienteForm extends Component {
     const { history } = this.props;
 
     // eslint-disable-next-line react/prop-types
-    history.push('/');
+    history.push('/home');
   };
 
   handleEmailChange = (event, index) => {
@@ -460,10 +460,10 @@ export default class ClienteForm extends Component {
 
     if (this.clienteId) {
       // eslint-disable-next-line react/prop-types
-      updateCliente(userToSave).then(() => history.push('/'));
+      updateCliente(userToSave).then(() => history.push('/home'));
     } else {
       // eslint-disable-next-line react/prop-types
-      createCliente(userToSave).then(() => history.push('/'));
+      createCliente(userToSave).then(() => history.push('/home'));
     }
   };
 

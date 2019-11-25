@@ -29,7 +29,7 @@ export default class Login extends Component {
       const res = await singIn(this.state);
       saveUser(res.headers.authorization);
       const { history } = this.props;
-      history.push('/');
+      history.push('/home');
     } catch (err) {
       console.error('Error ao realizar login: ', err);
     }

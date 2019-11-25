@@ -13,8 +13,9 @@ export default function Routes() {
     <BrowserRouter>
       <Switch>
         <Route path="/" exact>
-          {getToken() == null ? <Redirect to="/login" /> : <Home />}
+          <Redirect to="/login" />
         </Route>
+        <Route path="/home" component={Home} />
         <Route path="/login" component={Login} />
         <Route path="/cliente/new" component={ClienteForm} />
         <Route path="/cliente/edit/:id" component={ClienteForm} />
