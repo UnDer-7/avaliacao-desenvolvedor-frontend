@@ -463,7 +463,7 @@ export default class ClienteForm extends Component {
   render() {
     return (
       <>
-        <NavBar />
+        <NavBar props={this.props} />
         <Form onSubmit={this.onSubmission}>
           <Container className="container-fluid pt-3 pb-4">
             <Row className="justify-content-center">
