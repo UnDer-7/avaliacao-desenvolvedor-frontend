@@ -6,27 +6,62 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import Modal from 'react-bootstrap/Modal';
 import { cepMask, cpfMask } from '../../utils/masks';
-import { getAllClientes } from '../../resources/clientes.resource';
+import {
+  deleteCliente,
+  getAllClientes,
+} from '../../resources/clientes.resource';
 import NavBar from '../../components/NavBar';
 
 class Home extends Component {
+  clienteToRemove;
+
   constructor(props) {
     super(props);
     this.state = {
       clientes: [],
+      showModal: false,
     };
   }
 
   componentDidMount() {
+    this.findAll();
+  }
+
+  findAll = () => {
     getAllClientes().then(res => {
       this.setState({ clientes: res });
     });
-  }
+  };
+
+  handleShow = clienteId => {
+    const { showModal } = this.state;
+    if (!showModal || typeof clienteId === 'number') {
+      this.clienteToRemove = clienteId;
+    }
+    this.setState({ showModal: !showModal });
+  };
 
   render() {
+    const { clientes, showModal } = this.state;
+
     return (
       <>
+        <Modal show={showModal} onHide={this.handleShow}>
+          <Modal.Header closeButton>
+            <Modal.Title>Remover Cliente</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>Tem certeza que deja remover esse Cliente?</Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={this.handleShow}>
+              cancelar
+            </Button>
+            <Button variant="primary" onClick={this.onRemove}>
+              Remover
+            </Button>
+          </Modal.Footer>
+        </Modal>
         <NavBar />
         <h1 align="center" className="p-4">
           Clientes
@@ -44,7 +79,7 @@ class Home extends Component {
                 </tr>
               </thead>
               <tbody>
-                {this.state.clientes.map(cliente => {
+                {clientes.map(cliente => {
                   return (
                     <tr key={cliente.id}>
                       <td>{cliente.nome}</td>
@@ -53,9 +88,16 @@ class Home extends Component {
                       <td>{cliente.localidade}</td>
                       <td width="10">
                         <ButtonGroup>
-                          <Button>Editar</Button>
+                          <Button onClick={() => this.onEdit(cliente.id)}>
+                            Editar
+                          </Button>
                           <Button variant="info">Visualizar</Button>
-                          <Button variant="danger">Excluir</Button>
+                          <Button
+                            variant="danger"
+                            onClick={() => this.handleShow(cliente.id)}
+                          >
+                            Excluir
+                          </Button>
                         </ButtonGroup>
                       </td>
                     </tr>
@@ -68,6 +110,19 @@ class Home extends Component {
       </>
     );
   }
+
+  onEdit = id => {
+    const { history } = this.props;
+
+    history.push(`/cliente/${id}`);
+  };
+
+  onRemove = () => {
+    if (this.clienteToRemove) {
+      deleteCliente(this.clienteToRemove).then(this.findAll);
+      this.handleShow(null);
+    }
+  };
 }
 
 export default Home;

@@ -15,13 +15,17 @@ import {
   telefoneMask,
   cepMask,
   celularMask,
-  normalizeCep, normalizeCpf, normalizeTelefone
-} from "../../utils/masks";
+  normalizeCep,
+  normalizeCpf,
+  normalizeTelefone,
+} from '../../utils/masks';
 import findCEP from '../../resources/via-cep.resource';
 import UFS from '../../utils/ufs';
-import { createCliente } from '../../resources/clientes.resource';
+import { createCliente, getOne, updateCliente } from "../../resources/clientes.resource";
 
 export default class ClienteForm extends Component {
+  clienteId;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -38,7 +42,32 @@ export default class ClienteForm extends Component {
     };
   }
 
+  componentDidMount = () => {
+    // eslint-disable-next-line react/prop-types
+    const { id } = this.props.match.params;
+    if (id) {
+      this.clienteId = id;
+      getOne(id).then(res => {
+        res.cpf = cpfMask(res.cpf);
+        res.cep = cepMask(res.cep);
+        res.telefones = res.telefones.map(item => {
+          return {
+            id: item.id,
+            numero:
+              item.tipoTelefone === 'CELULAR'
+                ? celularMask(item.numero)
+                : telefoneMask(item.numero),
+            tipoTelefone: item.tipoTelefone,
+          };
+        });
+        this.setState({ ...res });
+      });
+    }
+  };
+
   buildNomeInput = () => {
+    const { nome } = this.state;
+
     return (
       <Form.Group controlId="id-cliente_form_nome">
         <Form.Label>Nome</Form.Label>
@@ -47,6 +76,7 @@ export default class ClienteForm extends Component {
           minLength="3"
           maxLength="100"
           type="text"
+          value={nome}
           placeholder="Nome do cliente"
         />
       </Form.Group>
@@ -82,6 +112,7 @@ export default class ClienteForm extends Component {
               <Form.Control
                 onChange={e => this.handleEmailChange(e, index)}
                 type="email"
+                value={item.email}
                 placeholder="E-mail do cliente"
               />
               <InputGroup.Append>
@@ -382,6 +413,7 @@ export default class ClienteForm extends Component {
     e.preventDefault();
     const userToSave = { ...this.state };
     const { cpf, cep } = userToSave;
+    // eslint-disable-next-line react/prop-types
     const { history } = this.props;
 
     userToSave.cpf = normalizeCpf(cpf);
@@ -390,9 +422,14 @@ export default class ClienteForm extends Component {
       // eslint-disable-next-line no-param-reassign
       item.numero = normalizeTelefone(item.numero);
     });
-    createCliente(userToSave).then(() => {
-      history.push('/');
-    });
+
+    if (this.clienteId) {
+      // eslint-disable-next-line react/prop-types
+      updateCliente(userToSave).then(() => history.push('/'));
+    } else {
+      // eslint-disable-next-line react/prop-types
+      createCliente(userToSave).then(() => history.push('/'));
+    }
   };
 
   render() {

@@ -6,6 +6,18 @@ export const getAllClientes = () => {
   return API.get(RESOURCE_URL).then(res => res.data);
 };
 
-export const createCliente = user => {
-  return API.post(RESOURCE_URL, user).then(res => res.data);
+export const createCliente = cliente => {
+  return API.post(RESOURCE_URL, cliente).then(res => res.data);
+};
+
+export const updateCliente = cliente => {
+  return API.put(RESOURCE_URL, cliente).then(res => res.data);
+};
+
+export const deleteCliente = clienteId => {
+  return API.delete(`${RESOURCE_URL}/${clienteId}`);
+};
+
+export const getOne = clienteId => {
+  return API.get(`${RESOURCE_URL}/${clienteId}`).then(res => res.data);
 };
