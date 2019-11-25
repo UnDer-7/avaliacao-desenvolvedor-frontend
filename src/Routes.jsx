@@ -1,12 +1,10 @@
 import React from 'react';
 
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
 
-import Redirect from 'react-router-dom/es/Redirect';
 import Login from './pages/login/Login';
 import Home from './pages/home/Home';
 import ClienteForm from './pages/cliente/ClienteForm';
-import { getToken } from './services/auth.service';
 
 export default function Routes() {
   return (
