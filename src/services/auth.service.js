@@ -8,11 +8,13 @@ export const removeToken = () => localStorage.removeItem(TOKEN_KEY);
 
 export const getDecodedToken = () => {
   const token = getToken();
+  if (!token) return null;
   return jwt(token.split('Bearer ')[1]);
 };
 
 export const isUserAdmin = () => {
   const token = getDecodedToken();
+  if (!token) return false;
   return !!token.ROLES.find(item => {
     return item.includes('ADMIN');
   });
