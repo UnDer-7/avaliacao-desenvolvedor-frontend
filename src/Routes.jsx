@@ -13,7 +13,8 @@ export default function Routes() {
         <Route path="/" exact component={Home} />
         <Route path="/login" component={Login} />
         <Route path="/cliente/new" component={ClienteForm} />
-        <Route path="/cliente/:id" component={ClienteForm} />
+        <Route path="/cliente/edit/:id" component={ClienteForm} />
+        <Route path="/cliente/view/:id" component={ClienteForm} />
       </Switch>
     </BrowserRouter>
   );

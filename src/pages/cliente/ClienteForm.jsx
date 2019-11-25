@@ -34,6 +34,8 @@ import {
 export default class ClienteForm extends Component {
   clienteId;
 
+  isView = false;
+
   constructor(props) {
     super(props);
     this.state = {
@@ -53,6 +55,11 @@ export default class ClienteForm extends Component {
   componentDidMount = () => {
     // eslint-disable-next-line react/prop-types
     const { id } = this.props.match.params;
+
+    if (this.props.match.path.includes('edit')) {
+      this.isView = true;
+    }
+
     if (id) {
       this.clienteId = id;
       getOne(id).then(res => {
@@ -464,37 +471,39 @@ export default class ClienteForm extends Component {
     return (
       <>
         <NavBar props={this.props} />
-        <Form onSubmit={this.onSubmission}>
-          <Container className="container-fluid pt-3 pb-4">
-            <Row className="justify-content-center">
-              <Col md="4" col="12">
-                <legend>Dados do Cliente</legend>
-                {this.buildNomeInput()}
-                {this.buildCPFInput()}
-              </Col>
-              <Col md="4" col="12">
-                <legend>Dados de Contato</legend>
-                {this.buildEmailInput()}
-                {this.buildTelefoneInput()}
-              </Col>
-              <Col md="8" col="12">
-                <legend>Dados de Endereço</legend>
-                {this.buildCEPInput()}
-                {this.buildLogradouroInput()}
-                {this.buildComplementoInput()}
-                {this.buildBairroInput()}
-                {this.buildLocalidadeInput()}
-                {this.buildUFInput()}
-              </Col>
-              <Col md="8" className="flex-row-reverse d-flex">
-                <ButtonGroup>
-                  {this.buildCancelarButton()}
-                  {this.buildSubmitButton()}
-                </ButtonGroup>
-              </Col>
-            </Row>
-          </Container>
-        </Form>
+        <fieldset disabled={!this.isView}>
+          <Form onSubmit={this.onSubmission}>
+            <Container className="container-fluid pt-3 pb-4">
+              <Row className="justify-content-center">
+                <Col md="4" col="12">
+                  <legend>Dados do Cliente</legend>
+                  {this.buildNomeInput()}
+                  {this.buildCPFInput()}
+                </Col>
+                <Col md="4" col="12">
+                  <legend>Dados de Contato</legend>
+                  {this.buildEmailInput()}
+                  {this.buildTelefoneInput()}
+                </Col>
+                <Col md="8" col="12">
+                  <legend>Dados de Endereço</legend>
+                  {this.buildCEPInput()}
+                  {this.buildLogradouroInput()}
+                  {this.buildComplementoInput()}
+                  {this.buildBairroInput()}
+                  {this.buildLocalidadeInput()}
+                  {this.buildUFInput()}
+                </Col>
+                <Col md="8" className="flex-row-reverse d-flex">
+                  <ButtonGroup>
+                    {this.buildCancelarButton()}
+                    {this.buildSubmitButton()}
+                  </ButtonGroup>
+                </Col>
+              </Row>
+            </Container>
+          </Form>
+        </fieldset>
       </>
     );
   }

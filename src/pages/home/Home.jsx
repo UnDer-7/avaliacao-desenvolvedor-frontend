@@ -88,14 +88,22 @@ class Home extends Component {
                       <td>{cliente.localidade}</td>
                       <td width="10">
                         <ButtonGroup>
-                          <Button onClick={() => this.onEdit(cliente.id)}>
+                          <Button
+                            onClick={() =>
+                              this.onNavigation(cliente.id, 'edit')
+                            }>
                             Editar
                           </Button>
-                          <Button variant="info">Visualizar</Button>
+                          <Button
+                            onClick={() =>
+                              this.onNavigation(cliente.id, 'view')
+                            }
+                            variant="info">
+                            Visualizar
+                          </Button>
                           <Button
                             variant="danger"
-                            onClick={() => this.handleShow(cliente.id)}
-                          >
+                            onClick={() => this.handleShow(cliente.id)}>
                             Excluir
                           </Button>
                         </ButtonGroup>
@@ -111,10 +119,10 @@ class Home extends Component {
     );
   }
 
-  onEdit = id => {
+  onNavigation = (id, action) => {
     const { history } = this.props;
 
-    history.push(`/cliente/${id}`);
+    history.push(`/cliente/${action}/${id}`);
   };
 
   onRemove = () => {
