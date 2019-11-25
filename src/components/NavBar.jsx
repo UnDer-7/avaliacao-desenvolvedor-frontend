@@ -23,7 +23,7 @@ const NavBar = ({ props }) => {
         <Nav.Link className="text-danger" href="/login" onClick={removeToken}>
           Sair
         </Nav.Link>
-        <Nav.Link className="text-secondary" href="/">
+        <Nav.Link className="text-secondary" href="/home">
           Voltar
         </Nav.Link>
       </Nav>
