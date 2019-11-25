@@ -1,11 +1,15 @@
 import React from 'react';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
-import { removeToken } from '../services/auth.service';
+import { isUserAdmin, removeToken } from '../services/auth.service';
+
+
 
 // eslint-disable-next-line react/prop-types
 const NavBar = ({ props }) => {
   let canShowNovoCliente = true;
+  const isAdm = isUserAdmin();
+
   if (props && props.match.path === '/cliente/new') {
     canShowNovoCliente = false;
   }
@@ -13,13 +17,16 @@ const NavBar = ({ props }) => {
     <Navbar bg="light" variant="light">
       <Navbar.Brand href="/">Surittec</Navbar.Brand>
       <Nav className="mr-auto">
-        {canShowNovoCliente ? (
+        {canShowNovoCliente && isAdm ? (
           <Nav.Link className="text-primary" href="/cliente/new">
             Novo Cliente
           </Nav.Link>
         ) : null}
         <Nav.Link className="text-danger" href="/login" onClick={removeToken}>
           Sair
+        </Nav.Link>
+        <Nav.Link className="text-secondary" href="/">
+          Voltar
         </Nav.Link>
       </Nav>
     </Navbar>

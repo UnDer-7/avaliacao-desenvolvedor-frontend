@@ -56,7 +56,7 @@ export default class ClienteForm extends Component {
     // eslint-disable-next-line react/prop-types
     const { id } = this.props.match.params;
 
-    if (this.props.match.path.includes('edit')) {
+    if (this.props.match.path.includes('view')) {
       this.isView = true;
     }
 
@@ -471,7 +471,7 @@ export default class ClienteForm extends Component {
     return (
       <>
         <NavBar props={this.props} />
-        <fieldset disabled={!this.isView}>
+        <fieldset disabled={this.isView}>
           <Form onSubmit={this.onSubmission}>
             <Container className="container-fluid pt-3 pb-4">
               <Row className="justify-content-center">

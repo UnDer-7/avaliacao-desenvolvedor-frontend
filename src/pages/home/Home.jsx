@@ -13,9 +13,12 @@ import {
   getAllClientes,
 } from '../../resources/clientes.resource';
 import NavBar from '../../components/NavBar';
+import { isUserAdmin } from '../../services/auth.service';
 
 class Home extends Component {
   clienteToRemove;
+
+  isAdmin;
 
   constructor(props) {
     super(props);
@@ -23,6 +26,7 @@ class Home extends Component {
       clientes: [],
       showModal: false,
     };
+    this.isAdmin = isUserAdmin();
   }
 
   componentDidMount() {
@@ -43,25 +47,46 @@ class Home extends Component {
     this.setState({ showModal: !showModal });
   };
 
+  modal = () => {
+    const { showModal } = this.state;
+
+    return (
+      <Modal show={showModal} onHide={this.handleShow}>
+        <Modal.Header closeButton>
+          <Modal.Title>Remover Cliente</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Tem certeza que deja remover esse Cliente?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={this.handleShow}>
+            cancelar
+          </Button>
+          <Button variant="primary" onClick={this.onRemove}>
+            Remover
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    );
+  };
+
+  onNavigation = (id, action) => {
+    const { history } = this.props;
+
+    history.push(`/cliente/${action}/${id}`);
+  };
+
+  onRemove = () => {
+    if (this.clienteToRemove) {
+      deleteCliente(this.clienteToRemove).then(this.findAll);
+      this.handleShow(null);
+    }
+  };
+
   render() {
-    const { clientes, showModal } = this.state;
+    const { clientes } = this.state;
 
     return (
       <>
-        <Modal show={showModal} onHide={this.handleShow}>
-          <Modal.Header closeButton>
-            <Modal.Title>Remover Cliente</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>Tem certeza que deja remover esse Cliente?</Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleShow}>
-              cancelar
-            </Button>
-            <Button variant="primary" onClick={this.onRemove}>
-              Remover
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        {this.modal()}
         <NavBar />
         <h1 align="center" className="p-4">
           Clientes
@@ -88,24 +113,31 @@ class Home extends Component {
                       <td>{cliente.localidade}</td>
                       <td width="10">
                         <ButtonGroup>
-                          <Button
-                            onClick={() =>
-                              this.onNavigation(cliente.id, 'edit')
-                            }>
-                            Editar
-                          </Button>
+                          {isUserAdmin() ? (
+                            <Button
+                              onClick={() =>
+                                this.onNavigation(cliente.id, 'edit')
+                              }
+                            >
+                              Editar
+                            </Button>
+                          ) : null}
                           <Button
                             onClick={() =>
                               this.onNavigation(cliente.id, 'view')
                             }
-                            variant="info">
+                            variant="info"
+                          >
                             Visualizar
                           </Button>
-                          <Button
-                            variant="danger"
-                            onClick={() => this.handleShow(cliente.id)}>
-                            Excluir
-                          </Button>
+                          {isUserAdmin() ? (
+                            <Button
+                              variant="danger"
+                              onClick={() => this.handleShow(cliente.id)}
+                            >
+                              Excluir
+                            </Button>
+                          ) : null}
                         </ButtonGroup>
                       </td>
                     </tr>
@@ -118,19 +150,6 @@ class Home extends Component {
       </>
     );
   }
-
-  onNavigation = (id, action) => {
-    const { history } = this.props;
-
-    history.push(`/cliente/${action}/${id}`);
-  };
-
-  onRemove = () => {
-    if (this.clienteToRemove) {
-      deleteCliente(this.clienteToRemove).then(this.findAll);
-      this.handleShow(null);
-    }
-  };
 }
 
 export default Home;
