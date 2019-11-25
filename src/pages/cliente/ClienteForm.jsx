@@ -283,13 +283,13 @@ export default class ClienteForm extends Component {
 
     return (
       <Form.Group controlId="id-cliente_form_localidade">
-        <Form.Label>Localidade</Form.Label>
+        <Form.Label>Cidade</Form.Label>
         <Form.Control
           required
           onChange={e => this.handleGenericChange(e, 'localidade')}
           type="text"
           value={localidade}
-          placeholder="Localidade"
+          placeholder="Cidade"
         />
       </Form.Group>
     );
