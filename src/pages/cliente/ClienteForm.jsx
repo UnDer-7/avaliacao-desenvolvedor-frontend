@@ -61,23 +61,27 @@ export default class ClienteForm extends Component {
     }
 
     if (id) {
-      this.clienteId = id;
-      getOne(id).then(res => {
-        res.cpf = cpfMask(res.cpf);
-        res.cep = cepMask(res.cep);
-        res.telefones = res.telefones.map(item => {
-          return {
-            id: item.id,
-            numero:
-              item.tipoTelefone === 'CELULAR'
-                ? celularMask(item.numero)
-                : telefoneMask(item.numero),
-            tipoTelefone: item.tipoTelefone,
-          };
-        });
-        this.setState({ ...res });
-      });
+      this.initCliente(id);
     }
+  };
+
+  initCliente = id => {
+    this.clienteId = id;
+    getOne(id).then(res => {
+      res.cpf = cpfMask(res.cpf);
+      res.cep = cepMask(res.cep);
+      res.telefones = res.telefones.map(item => {
+        return {
+          id: item.id,
+          numero:
+            item.tipoTelefone === 'CELULAR'
+              ? celularMask(item.numero)
+              : telefoneMask(item.numero),
+          tipoTelefone: item.tipoTelefone,
+        };
+      });
+      this.setState({ ...res });
+    });
   };
 
   buildNomeInput = () => {
@@ -133,14 +137,7 @@ export default class ClienteForm extends Component {
                 value={item.email}
                 placeholder="E-mail do cliente"
               />
-              <InputGroup.Append>
-                <Button
-                  variant="danger"
-                  onClick={() => this.onRemovingEmail(index)}
-                >
-                  <FontAwesomeIcon icon={faTrash} color="white" />
-                </Button>
-              </InputGroup.Append>
+              {this.buildRemoveButton(() => this.onRemovingEmail(index))}
             </InputGroup>
           );
         })}
@@ -200,14 +197,7 @@ export default class ClienteForm extends Component {
                 value={item.numero}
                 placeholder="Telefone do cliente"
               />
-              <InputGroup.Append>
-                <Button
-                  variant="danger"
-                  onClick={() => this.onRemovingTelefone(index)}
-                >
-                  <FontAwesomeIcon icon={faTrash} color="white" />
-                </Button>
-              </InputGroup.Append>
+              {this.buildRemoveButton(() => this.onRemovingTelefone(index))}
             </InputGroup>
           );
         })}
@@ -215,6 +205,16 @@ export default class ClienteForm extends Component {
           Adicionar outro telefone
         </Button>
       </Form.Group>
+    );
+  };
+
+  buildRemoveButton = f => {
+    return (
+      <InputGroup.Append>
+        <Button variant="danger" onClick={f}>
+          <FontAwesomeIcon icon={faTrash} color="white" />
+        </Button>
+      </InputGroup.Append>
     );
   };
 

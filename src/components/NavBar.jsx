@@ -3,8 +3,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import { isUserAdmin, removeToken } from '../services/auth.service';
 
-
-
 // eslint-disable-next-line react/prop-types
 const NavBar = ({ props }) => {
   let canShowNovoCliente = true;
