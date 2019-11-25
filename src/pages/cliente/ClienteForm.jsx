@@ -49,6 +49,7 @@ export default class ClienteForm extends Component {
       localidade: '',
       uf: 'Selecione',
       complemento: '',
+      cepNotFound: false,
     };
   }
 
@@ -240,6 +241,9 @@ export default class ClienteForm extends Component {
             </Button>
           </InputGroup.Append>
         </InputGroup>
+        {this.state.cepNotFound ? (
+          <small className="text-danger">CEP não encontrado</small>
+        ) : null}
       </Form.Group>
     );
   };
@@ -433,6 +437,12 @@ export default class ClienteForm extends Component {
   };
 
   onSuccessfulCEPSearch = cep => {
+    if (cep.hasOwnProperty('erro')) {
+      this.setState({ cepNotFound: true });
+      return;
+    }
+    this.setState({ cepNotFound: false });
+
     Object.keys(cep).forEach(key => {
       this.setState({ [key]: cep[key] });
     });
