@@ -9,6 +9,10 @@ import { faTrash, faSearch } from '@fortawesome/free-solid-svg-icons';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Container from 'react-bootstrap/Container';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import NavBar from '../../components/NavBar';
 import {
   cpfMask,
@@ -21,7 +25,11 @@ import {
 } from '../../utils/masks';
 import findCEP from '../../resources/via-cep.resource';
 import UFS from '../../utils/ufs';
-import { createCliente, getOne, updateCliente } from "../../resources/clientes.resource";
+import {
+  createCliente,
+  getOne,
+  updateCliente,
+} from '../../resources/clientes.resource';
 
 export default class ClienteForm extends Component {
   clienteId;
@@ -72,6 +80,7 @@ export default class ClienteForm extends Component {
       <Form.Group controlId="id-cliente_form_nome">
         <Form.Label>Nome</Form.Label>
         <Form.Control
+          required
           onChange={e => this.handleGenericChange(e, 'nome')}
           minLength="3"
           maxLength="100"
@@ -90,6 +99,7 @@ export default class ClienteForm extends Component {
       <Form.Group controlId="id-cliente_form_cpf">
         <Form.Label>CPF</Form.Label>
         <Form.Control
+          required
           onChange={this.handleCPFtChange}
           value={cpf}
           type="text"
@@ -110,6 +120,7 @@ export default class ClienteForm extends Component {
             // eslint-disable-next-line react/no-array-index-key
             <InputGroup className="pb-2" key={index}>
               <Form.Control
+                required
                 onChange={e => this.handleEmailChange(e, index)}
                 type="email"
                 value={item.email}
@@ -175,6 +186,7 @@ export default class ClienteForm extends Component {
                 </DropdownButton>
               </InputGroup.Prepend>
               <Form.Control
+                required
                 onChange={e => this.handleTelefoneChange(e, index)}
                 type="text"
                 maxLength={this.handleTelefoneMaxLength(item.tipoTelefone)}
@@ -207,6 +219,7 @@ export default class ClienteForm extends Component {
         <Form.Label>CEP</Form.Label>
         <InputGroup className="pb-2">
           <Form.Control
+            required
             onChange={this.handleCEPChange}
             minLength="9"
             maxLength="9"
@@ -231,6 +244,7 @@ export default class ClienteForm extends Component {
       <Form.Group controlId="id-cliente_form_logradouro">
         <Form.Label>Logradouro</Form.Label>
         <Form.Control
+          required
           onChange={e => this.handleGenericChange(e, 'logradouro')}
           type="text"
           value={logradouro}
@@ -247,6 +261,7 @@ export default class ClienteForm extends Component {
       <Form.Group controlId="id-cliente_form_bairro">
         <Form.Label>Bairro</Form.Label>
         <Form.Control
+          required
           onChange={e => this.handleGenericChange(e, 'bairro')}
           type="text"
           value={bairro}
@@ -263,6 +278,7 @@ export default class ClienteForm extends Component {
       <Form.Group controlId="id-cliente_form_localidade">
         <Form.Label>Localidade</Form.Label>
         <Form.Control
+          required
           onChange={e => this.handleGenericChange(e, 'localidade')}
           type="text"
           value={localidade}
@@ -311,11 +327,23 @@ export default class ClienteForm extends Component {
   };
 
   buildSubmitButton = () => {
+    return <Button type="submit">Salvar</Button>;
+  };
+
+  buildCancelarButton = () => {
     return (
-      <Button block type="submit">
-        Salvar
+      <Button onClick={this.handleCancelar} variant="danger" type="button">
+        Cancelar
       </Button>
     );
+  };
+
+  handleCancelar = () => {
+    // eslint-disable-next-line react/prop-types
+    const { history } = this.props;
+
+    // eslint-disable-next-line react/prop-types
+    history.push('/');
   };
 
   handleEmailChange = (event, index) => {
@@ -437,18 +465,35 @@ export default class ClienteForm extends Component {
       <>
         <NavBar />
         <Form onSubmit={this.onSubmission}>
-          <legend>Dados do Cliente</legend>
-          {this.buildNomeInput()}
-          {this.buildCPFInput()}
-          {this.buildEmailInput()}
-          {this.buildTelefoneInput()}
-          {this.buildCEPInput()}
-          {this.buildLogradouroInput()}
-          {this.buildBairroInput()}
-          {this.buildLocalidadeInput()}
-          {this.buildUFInput()}
-          {this.buildComplementoInput()}
-          {this.buildSubmitButton()}
+          <Container className="container-fluid pt-3 pb-4">
+            <Row className="justify-content-center">
+              <Col md="4" col="12">
+                <legend>Dados do Cliente</legend>
+                {this.buildNomeInput()}
+                {this.buildCPFInput()}
+              </Col>
+              <Col md="4" col="12">
+                <legend>Dados de Contato</legend>
+                {this.buildEmailInput()}
+                {this.buildTelefoneInput()}
+              </Col>
+              <Col md="8" col="12">
+                <legend>Dados de Endereço</legend>
+                {this.buildCEPInput()}
+                {this.buildLogradouroInput()}
+                {this.buildComplementoInput()}
+                {this.buildBairroInput()}
+                {this.buildLocalidadeInput()}
+                {this.buildUFInput()}
+              </Col>
+              <Col md="8" className="flex-row-reverse d-flex">
+                <ButtonGroup>
+                  {this.buildCancelarButton()}
+                  {this.buildSubmitButton()}
+                </ButtonGroup>
+              </Col>
+            </Row>
+          </Container>
         </Form>
       </>
     );
